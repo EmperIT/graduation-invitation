@@ -23,4 +23,108 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* Use the project's background image (no dark overlay) */
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
+
+/* Make app root take full dynamic viewport height on modern browsers with a fallback */
+html, body, #__next {
+  height: 100%;
+}
+
+.app-full-height {
+  min-height: 100dvh; /* dynamic viewport height for mobile browsers */
+  min-height: 100vh;  /* fallback */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Patterned background: uses a background image plus two diagonal repeating gradients
+   to create tilted square frames (diamonds). A semi-opaque overlay darkens the image
+   so the pattern is subtle. Replace --bg-image via inline style to point to your image. */
+
+.patterned-bg {
+  /* tile width/height define rectangular cells */
+  --tile-w: 140px; /* column width */
+  --tile-h: 220px; /* row height (taller -> vertical rectangles) */
+  --line: 6px;     /* thickness of grid lines */
+  --overlay-alpha: 0.28; /* dark overlay alpha applied to each tile image */
+
+  /* Layers (top -> bottom): vertical grid lines, horizontal grid lines,
+     dark overlay (tiled), the tiled image */
+  background-image:
+    repeating-linear-gradient(90deg, white 0 var(--line), transparent var(--line) calc(var(--tile-w))),
+    repeating-linear-gradient(0deg, white 0 var(--line), transparent var(--line) calc(var(--tile-h))),
+    linear-gradient(rgba(0,0,0,var(--overlay-alpha)), rgba(0,0,0,var(--overlay-alpha))),
+    var(--bg-image, none);
+
+  /* Make the overlay and image repeat per tile so each cell contains the image with overlay applied */
+  background-size: auto, auto, var(--tile-w) var(--tile-h), var(--tile-w) var(--tile-h);
+  background-repeat: repeat, repeat, repeat, repeat;
+  background-position: 0 0, 0 0, center center, center center;
+}
+
+/* Make pattern subtler on small screens */
+@media (max-width: 640px) {
+  .patterned-bg { --tile-w: 100px; --tile-h: 160px; --line: 4px; }
+}
+
+/* Photo grid (centered, max-width 1280px). White grid lines are created by the
+   grid gap showing the wrapper background (white). Each tile uses the same
+   image (set via --tile-image) and has an overlay to darken the photo. */
+.photo-grid-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none; /* allow clicks through */
+}
+.photo-grid {
+  --line: 8px;            
+  --grid-padding: 16px;
+  --overlay-alpha: 0.22;  
+  --tile-image: var(--bg-image, none);
+
+  width: 100%;
+  /* Bóp nhỏ max-width từ 1280px xuống (ví dụ 700px) để lưới không bị bè ngang */
+  max-width: 700px;       
+  background: white;      
+  display: grid;
+  gap: var(--line);
+  padding: var(--grid-padding);
+  
+  /* Đổi từ 3 cột xuống 2 cột (hoặc 1 cột nếu muốn khung ảnh đơn) */
+  grid-template-columns: repeat(2, 1fr); 
+}
+.photo-tile {
+  position: relative;
+  background-image: var(--tile-image);
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 3 / 4; /* desktop default portrait 3:4 */
+  overflow: hidden;
+}
+
+/* Mobile override: make tiles taller (9:16) on narrow screens */
+@media (max-width: 640px) {
+  .photo-tile { aspect-ratio: 9 / 16; }
+}
+.photo-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,var(--overlay-alpha));
+}
+
+/* Responsive: on mobile (narrow) switch to 2x2 and hide extra tiles */
+@media (max-width: 640px) {
+  .photo-grid { grid-template-columns: repeat(2, 1fr); max-width: calc(100% - 32px); }
+  .photo-grid .photo-tile:nth-child(n+5) { display: none; }
+}
+
+/* Make sure main content sits above the grid */
+.content-above-grid { position: relative; z-index: 10; }
