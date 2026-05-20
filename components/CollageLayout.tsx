@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 
+const slides = ['/test.jpg', '/background.jpg', '/flower.png', '/anh1.jpg'];
+
 function Slideshow() {
-  const slides = ['/test.jpg', '/background.jpg', '/flower.png', '/anh1.jpg'];
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -24,9 +25,13 @@ function Slideshow() {
   );
 }
 
-export default function CollageLayout() {
+interface CollageLayoutProps {
+  framed?: boolean;
+}
+
+export default function CollageLayout({ framed = false }: CollageLayoutProps) {
   return (
-    <div className="min-h-[100dvh] w-full flex items-center justify-center sm:p-4 p-0 overflow-hidden">
+    <div className={`${framed ? 'h-full' : 'min-h-[100dvh]'} w-full flex items-center justify-center sm:p-4 p-0 overflow-hidden`}>
 
       {/* ĐÃ SỬA: Xóa gap-2 và sm:gap-4 ở đây để các ô dính chặt vào nhau */}
       <div className="relative w-full max-w-full sm:max-w-2xl grid grid-cols-2">

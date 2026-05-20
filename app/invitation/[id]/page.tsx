@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import guests from '../../../data/guests.json';
-import InvitationContainer from '@/components/CollageLayout';
+import InvitationContainer from '@/components/PageWithIntro';
 
 interface PageProps {
   params: Promise<{ id: string }>;

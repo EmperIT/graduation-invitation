@@ -3,75 +3,110 @@
 import { motion, Variants } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import CollageLayout from './CollageLayout';
 
 interface IntroSequenceProps {
     onComplete: () => void;
 }
 
 export default function IntroSequence({ onComplete }: IntroSequenceProps) {
-    const images = ['/next.svg', '/vercel.svg', '/file.svg'];
+    const images = ['/test.jpg', '/background.jpg'];
+    const collageIndex = images.length;
 
     const containerVariants: Variants = {
         hidden: { opacity: 1 },
         visible: { opacity: 1 },
         exit: {
             opacity: 0,
-            scale: 1.1, // Hơi zoom lên một chút rồi mờ đi trước khi vào thiệp
-            transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
+            transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] },
         },
     };
 
-    const baseDelay = 0.2;
-    const cardDelay = 0.4; // Kéo dài độ trễ một chút để xem rõ từng ảnh bay vào
-    const duration = 1.6;  // Animation dài hơn để tạo cảm giác "trải dần" chậm rãi
+    const baseDelay = 0.25;
+    const cardDelay = 1.15;
+    const slideDuration = 2.25;
+    const finalZoomDelay = baseDelay + collageIndex * cardDelay + slideDuration + 0.45;
+    const finalZoomDuration = 1.7;
+
+    const cameraVariants: Variants = {
+        hidden: {
+            scale: 1.7,
+            z: 460,
+        },
+        visible: {
+            scale: 0.88,
+            z: -120,
+            transition: {
+                duration: finalZoomDelay,
+                ease: "linear",
+            },
+        },
+    };
 
     const cardVariants: Variants = {
-        hidden: {
-            opacity: 0,
-            scale: 0.3,     // Bắt đầu từ nhỏ (từ trong), sẽ to ra ngoài
-            scaleX: 0,      // Trải dần (ép lại theo trục X, dãn ra)
-            y: -200,        // Rơi từ trên cao xuống
-            z: 500,         // Tạo chiều sâu
-            rotateX: 50,    // Ngửa ảnh ra sau
-            rotateY: 20,
-            rotateZ: 0,
-        },
-        visible: (i: number) => {
-            // Toán học để tạo góc nghiêng (rotateZ) ngẫu nhiên cho mỗi ảnh khi hạ cánh
-            // Ảnh chẵn nghiêng sang trái, ảnh lẻ nghiêng sang phải
-            const tiltAngle = i % 2 === 0 ? (i * 6 + 4) : -(i * 5 + 3);
-
-            // X dịch chuyển nhẹ để các ảnh không bị đè thẳng tâm lên nhau
-            const xOffset = i % 2 === 0 ? (i * 10) : -(i * 10);
+        hidden: (i: number) => {
+            const direction = i % 2 === 0 ? -1 : 1;
 
             return {
-                opacity: 1,
-                scale: 1.15,    // Desktop: hơi to hơn (1.15), mobile sẽ scale down
-                scaleX: 1,      // Dãn đầy đủ
-                y: 0,           // Hạ cánh xuống giữa màn hình
-                z: 0,
-                x: xOffset,
-                rotateX: 0,     // Dựng phẳng lại
+                opacity: 0,
+                scale: 0.98,
+                x: direction * 360,
+                y: 22,
+                z: i * 70,
+                rotateX: 0,
                 rotateY: 0,
-                rotateZ: tiltAngle, // Nằm nghiêng lộn xộn
+                rotateZ: direction * 3,
+            };
+        },
+        visible: (i: number) => {
+            const direction = i % 2 === 0 ? -1 : 1;
+            const tiltAngle = i % 2 === 0 ? -(i * 3 + 3) : i * 3 + 2;
+            const xOffset = (i - 1) * 28;
+            const yOffset = (i - 1) * 12;
+            const isCollage = i === collageIndex;
+
+            if (isCollage) {
+                return {
+                    opacity: [0, 1, 1],
+                    scale: [0.98, 1.02, 1.65],
+                    x: [direction * 360, xOffset, 0],
+                    y: [22, yOffset, 0],
+                    z: [i * 70, i * 70, 180],
+                    rotateX: 0,
+                    rotateY: 0,
+                    rotateZ: [direction * 3, tiltAngle, 0],
+                    transition: {
+                        duration: slideDuration + finalZoomDuration,
+                        delay: baseDelay + i * cardDelay,
+                        ease: "easeInOut",
+                        times: [0, 0.58, 1],
+                    },
+                };
+            }
+
+            return {
+                opacity: [0, 1],
+                x: [direction * 360, xOffset],
+                y: [22, yOffset],
+                z: i * 70,
+                scale: [0.98, 1],
+                rotateX: 0,
+                rotateY: 0,
+                rotateZ: [direction * 3, tiltAngle],
                 transition: {
-                    duration,
                     delay: baseDelay + i * cardDelay,
-                    // Dùng spring để tạo độ nảy nhẹ khi ảnh "rơi" xuống mặt phẳng
-                    type: "spring",
-                    stiffness: 50,
-                    damping: 20,
-                    mass: 1.8,
+                    duration: slideDuration,
+                    ease: "easeInOut",
                 },
             };
         },
     };
 
     useEffect(() => {
-        const total = baseDelay + (images.length - 1) * cardDelay + duration + 1;
+        const total = finalZoomDelay + finalZoomDuration - 0.25;
         const t = setTimeout(() => onComplete(), total * 1000);
         return () => clearTimeout(t);
-    }, [images.length, onComplete]);
+    }, [finalZoomDelay, onComplete]);
 
     return (
         <motion.div
@@ -79,36 +114,44 @@ export default function IntroSequence({ onComplete }: IntroSequenceProps) {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-            style={{ perspective: 1500 }} // Tăng perspective để hiệu ứng 3D mạnh hơn
+            className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black"
+            style={{ perspective: 1500 }}
         >
-            <div className="relative w-72 sm:w-96 md:w-[28rem] h-[400px] sm:h-[500px] md:h-[540px]">
-                {images.map((src, index) => (
+            <motion.div
+                variants={cameraVariants}
+                className="relative h-[410px] w-72 sm:h-[500px] sm:w-96 md:h-[540px] md:w-[28rem]"
+                style={{ transformStyle: 'preserve-3d' }}
+            >
+                {[...images, 'collage'].map((src, index) => (
                     <motion.div
                         key={index}
                         custom={index}
                         variants={cardVariants}
                         initial="hidden"
                         animate="visible"
-                        // Thêm viền trắng dày và shadow to để giống ảnh Polaroid/Film
-                        className="absolute inset-0 w-full h-full bg-white rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2 sm:p-3 md:p-4"
+                        className="absolute inset-0 h-full w-full rounded-sm bg-white p-2 shadow-[0_24px_70px_rgba(0,0,0,0.55)] sm:p-3 md:p-4"
                         style={{
-                            zIndex: index, // Ảnh sau đè lên ảnh trước
+                            zIndex: 10 + index,
                             transformStyle: 'preserve-3d',
                         }}
                     >
-                        <div className="w-full h-full overflow-hidden bg-gray-200">
-                            <Image
-                            width={400}
-                            height={400}
-                                src={src}
-                                alt={`intro-${index}`}
-                                className="w-full h-full object-cover"
-                            />
+                        <div className="relative h-full w-full overflow-hidden bg-gray-200">
+                            {index === collageIndex ? (
+                                <CollageLayout framed />
+                            ) : (
+                                <Image
+                                    src={src}
+                                    alt={`intro-${index}`}
+                                    fill
+                                    priority={index === 0}
+                                    sizes="(max-width: 640px) 288px, (max-width: 768px) 384px, 448px"
+                                    className="object-cover"
+                                />
+                            )}
                         </div>
                     </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </motion.div>
     );
 }
