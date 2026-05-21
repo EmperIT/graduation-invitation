@@ -1,0 +1,12 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^npx tsc --noEmit$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^node -e \"const fs=require\\('fs'\\);const s=fs\\.readFileSync\\('components/CollageLayout\\.tsx','utf8'\\);const regex=/\\(<div\\[\\\\s\\\\S\\]\\*\\?>\\)\\|\\(</div>\\)/g;let m;const stack=\\[\\];let i=0;while\\(\\(m=regex\\.exec\\(s\\)\\)\\)\\{i\\+\\+; if\\(m\\[1\\]\\)\\{const tag=m\\[1\\]; const selfClosing=/\\\\/\\\\s\\*>\\$/\\.test\\(tag\\); if\\(selfClosing\\)\\{/\\* ignore \\*/\\} else\\{stack\\.push\\(\\{idx:i,pos:m\\.index,tag:tag\\.slice\\(0,80\\)\\.replace\\(/\\\\n/g,' '\\)\\}\\);\\} \\} else if\\(m\\[2\\]\\)\\{ if\\(stack\\.length===0\\)\\{console\\.log\\('extra closing at',m\\.index\\); \\} else stack\\.pop\\(\\); \\}\\} console\\.log\\('unclosed count',stack\\.length\\); stack\\.slice\\(0,10\\)\\.forEach\\(\\(x,j\\)=>console\\.log\\('unclosed',j\\+1,x\\.tag,x\\.pos\\)\\);\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

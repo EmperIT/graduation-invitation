@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import FlowerFall from "./FlowerFall";
 import Typewriter from "./Typewriter";
 
@@ -33,19 +33,64 @@ interface CollageLayoutProps {
 }
 
 export default function CollageLayout({ framed = false }: CollageLayoutProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width === 0 || height === 0) continue;
+        
+        const isDesktop = window.innerWidth >= 640;
+        const baseW = isDesktop ? 672 : 360;
+        const baseH = isDesktop ? 885 : 640;
+        
+        const paddingX = framed ? 0 : (isDesktop ? 32 : 0);
+        const paddingY = framed ? 0 : (isDesktop ? 64 : 32);
+        
+        const availableW = Math.max(0, width - paddingX);
+        const availableH = Math.max(0, height - paddingY);
+        
+        const scaleX = availableW / baseW;
+        const scaleY = availableH / baseH;
+        
+        setScale(Math.min(scaleX, scaleY, isDesktop ? 1.2 : 2)); 
+      }
+    });
+    
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    
+    return () => observer.disconnect();
+  }, [framed]);
+
   return (
     <div
-      className={`${framed ? "h-full" : "min-h-[100dvh]"} relative w-full flex items-center justify-center sm:p-4 p-0 overflow-hidden`}
+      ref={containerRef}
+      className={`${framed ? "h-full w-full" : "min-h-[100dvh] w-full"} relative flex items-center justify-center overflow-hidden`}
     >
       {!framed && (
-        <div className="absolute inset-0 z-10">
+        <div className="absolute inset-0 z-30 pointer-events-none">
           <FlowerFall />
         </div>
       )}
 
-      {/* ĐÃ SỬA: Xóa gap-2 và sm:gap-4 ở đây để các ô dính chặt vào nhau */}
-      <div className="relative w-full max-w-full sm:max-w-2xl">
-        {/* Desktop: faux wooden frame via theme tokens. Mobile: no frame, just shadow. */}
+      {/* Wrapper transform scale giúp ảnh không bao giờ bị cắt */}
+      <div 
+        className="absolute inset-0 z-20 flex justify-center items-center transition-opacity duration-500"
+        style={{ 
+          transform: `scale(${scale})`, 
+          transformOrigin: "center",
+          opacity: isMounted ? 1 : 0
+        }}
+      >
+        <div className="relative w-[360px] sm:w-[672px] shrink-0">
+          {/* Desktop: faux wooden frame via theme tokens. Mobile: no frame, just shadow. */}
         <div className="shadow-2xl sm:shadow-none">
           <div className="hidden sm:block rounded-[28px] p-[10px] bg-gradient-to-br from-amber-950/70 via-amber-800/55 to-yellow-950/60 shadow-2xl">
             <div className="rounded-[22px] bg-black/15 p-[6px]">
@@ -219,7 +264,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
               />
             </div>
 
-            <div className="absolute top-[57%] left-0 z-20 w-[300px] -translate-y-1/2">
+            <div className="absolute top-[57%] left-0 z-20 w-[220px] -translate-y-1/2">
               <div className="relative aspect-[520/479] w-full drop-shadow-2xl">
                 <img
                   src="/camera.png"
@@ -234,12 +279,12 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                 <img
                   src="/flower.png"
                   alt="flower"
-                  className="absolute top-4 left-[20%] z-40 h-12 w-12 rotate-[-15deg]"
+                  className="absolute top-3 left-[20%] z-40 h-9 w-9 rotate-[-15deg]"
                 />
               </div>
             </div>
 
-            <div className="absolute top-[40%] right-0 z-20 w-[230px] -translate-y-1/2 flex justify-end">
+            <div className="absolute top-[40%] right-0 z-20 w-[170px] -translate-y-1/2 flex justify-end">
               <img
                 src="/piece1-cropped.png"
                 alt="Paper"
@@ -247,7 +292,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                 className="relative z-20 w-full object-contain object-right"
               />
               <div className="absolute left-[14%] top-[22%] z-30 w-[76%] overflow-hidden">
-                <p className="paper-invite-note w-full max-w-full whitespace-normal break-words text-left text-[17px] font-medium leading-tight">
+                <p className="paper-invite-note w-full max-w-full whitespace-normal break-words text-left text-[13px] font-medium leading-tight">
                   <Typewriter text="Mời bạn đến tham dự lễ tốt nghiệp của mình nhé" delay={1200} speed={50} />
                 </p>
               </div>
@@ -295,6 +340,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

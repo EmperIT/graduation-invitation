@@ -49,24 +49,8 @@ export default function FlowerFall({
     let height = 0;
     let dpr = 1;
 
-    const getPetalColor = () => {
-      // Resolve to an actual computed color string (rgb/rgba) so canvas can use it.
-      // This respects the app's theme tokens because body text color is derived from them.
-      return getComputedStyle(document.body).color || "";
-    };
-
-    const resolveFromClass = (className: string, cssProp: "color" | "backgroundColor") => {
-      const el = document.createElement("span");
-      el.className = `${className} fixed -left-[9999px] -top-[9999px]`;
-      document.body.appendChild(el);
-      const value = getComputedStyle(el)[cssProp];
-      document.body.removeChild(el);
-      return value || "";
-    };
-
-    let petalWhite = getPetalColor();
-    // Use an existing Tailwind token already present in the app (bg-pink-200).
-    let petalPink = resolveFromClass("bg-pink-200", "backgroundColor");
+    let petalWhite = "rgba(255, 255, 255, 0.85)";
+    let petalPink = "rgba(251, 207, 232, 0.85)";
 
     let lastT = 0;
 
@@ -112,7 +96,7 @@ export default function FlowerFall({
       const size = randomSize();
       return {
         x: Math.random() * width,
-        y: -Math.random() * height,
+        y: Math.random() * height - height * 0.2,
         size,
         fallSpeed: 22 + Math.random() * 58,
         driftSpeed: -10 + Math.random() * 20,
@@ -213,17 +197,8 @@ export default function FlowerFall({
       rafIdRef.current = window.requestAnimationFrame(step);
     };
 
-    const reduced = isReducedMotion;
-
     const start = () => {
       resize();
-
-      if (reduced) {
-        // Draw a still frame (no animation)
-        draw(performance.now());
-        return;
-      }
-
       rafIdRef.current = window.requestAnimationFrame(step);
     };
 
@@ -238,40 +213,10 @@ export default function FlowerFall({
 
     // Best-effort update if theme changes (dark/light) so petals keep matching text color.
     const onThemeChange = () => {
-      petalWhite = getPetalColor();
-      petalPink = resolveFromClass("bg-pink-200", "backgroundColor");
       draw(performance.now());
     };
     window.matchMedia?.("(prefers-color-scheme: dark)")?.addEventListener?.("change", onThemeChange);
     window.matchMedia?.("(prefers-color-scheme: light)")?.addEventListener?.("change", onThemeChange);
-
-    const media = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const onMotionChange = () => {
-      if (!media) return;
-
-      // Stop any existing loop
-      if (rafIdRef.current != null) {
-        window.cancelAnimationFrame(rafIdRef.current);
-        rafIdRef.current = null;
-      }
-      lastT = 0;
-
-      // Re-render in the new mode
-      resize();
-      if (media.matches) {
-        draw(performance.now());
-      } else {
-        rafIdRef.current = window.requestAnimationFrame(step);
-      }
-    };
-
-    if (media) {
-      if (typeof media.addEventListener === "function") {
-        media.addEventListener("change", onMotionChange);
-      } else if (typeof media.addListener === "function") {
-        media.addListener(onMotionChange);
-      }
-    }
 
     return () => {
       window.removeEventListener("resize", onResize);
@@ -279,20 +224,12 @@ export default function FlowerFall({
       window.matchMedia?.("(prefers-color-scheme: dark)")?.removeEventListener?.("change", onThemeChange);
       window.matchMedia?.("(prefers-color-scheme: light)")?.removeEventListener?.("change", onThemeChange);
 
-      if (media) {
-        if (typeof media.removeEventListener === "function") {
-          media.removeEventListener("change", onMotionChange);
-        } else if (typeof media.removeListener === "function") {
-          media.removeListener(onMotionChange);
-        }
-      }
-
       if (rafIdRef.current != null) {
         window.cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
     };
-  }, [enabled, isReducedMotion, variant]);
+  }, [enabled, variant]);
 
   if (!enabled) return null;
 
