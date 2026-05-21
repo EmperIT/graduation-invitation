@@ -35,6 +35,7 @@ interface CollageLayoutProps {
 export default function CollageLayout({ framed = false }: CollageLayoutProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [mobileScale, setMobileScale] = useState(1);
   const [isMounted, setIsMounted] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -61,6 +62,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
         const isDesktop = window.innerWidth >= 640;
         if (!isDesktop) {
           setScale(1);
+          setMobileScale(width / 390);
           continue;
         }
 
@@ -112,52 +114,25 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
         <div className="absolute inset-0 sm:relative sm:inset-auto h-full sm:h-auto shadow-2xl sm:shadow-none">
           <div className="hidden sm:block rounded-[28px] p-[10px] bg-gradient-to-br from-amber-950/70 via-amber-800/55 to-yellow-950/60 shadow-2xl">
             <div className="rounded-[22px] bg-black/15 p-[6px]">
-              <div className="relative grid grid-cols-2 overflow-hidden rounded-[18px]">
-                {/* Góc trên trái */}
-                {/* ĐÃ SỬA: Chỉ bo góc ở phía ngoài cùng bên trái và trên cùng (rounded-tl-xl) */}
-                <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] overflow-hidden rounded-tl-xl">
-                  <img
-                    src="/anh1.jpg"
-                    alt="Top Left"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Góc trên phải */}
-                <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] overflow-hidden rounded-tr-xl">
-                  <img
-                    src="/anh2.jpg"
-                    alt="Top Right"
-                    className="w-full h-full object-cover sm:object-contain"
-                  />
-                  {/* TDT Logo */}
-                  <img
-                    src="/logo-tdt.webp"
-                    alt="TDTU Logo"
-                    className="absolute top-3 right-3 z-40 w-16 drop-shadow-md sm:top-4 sm:right-4 sm:w-20"
-                  />
-                </div>
-
-                {/* Góc dưới trái */}
-                <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] overflow-hidden rounded-bl-xl">
-                  <img
-                    src="/anh1.jpg"
-                    alt="Bottom Left"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* Góc dưới phải */}
-                <div className="relative w-full aspect-[9/16] sm:aspect-[3/4] overflow-hidden rounded-br-xl">
+              <div className="relative overflow-hidden rounded-[18px]">
+                {/* Nền Video Background */}
+                <div className="relative w-full aspect-[3/4]">
                   <video
-                    src="/video2.mp4"
-                    className="w-full h-full object-cover object-top"
+                    src="/video-background.mp4"
+                    className="absolute inset-0 w-full h-full object-cover"
                     autoPlay
                     muted
                     loop
                     playsInline
                   />
                 </div>
+
+                {/* TDT Logo */}
+                <img
+                  src="/logo-tdt.webp"
+                  alt="TDTU Logo"
+                  className="absolute top-3 right-3 z-40 w-16 drop-shadow-md sm:top-4 sm:right-4 sm:w-20"
+                />
 
                 <div className="absolute top-[57%] left-0 z-20 w-[300px] sm:w-[390px] -translate-y-1/2">
                   <div className="relative aspect-[520/479] w-full drop-shadow-2xl">
@@ -280,99 +255,76 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
 
         {/* Mobile/Small: no wood frame, just the content itself */}
         <div className="sm:hidden absolute inset-0">
-          <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 overflow-hidden">
-            {/* Góc trên trái */}
-            <div className="relative w-full h-full overflow-hidden">
-              <img
-                src="/anh1.jpg"
-                alt="Top Left"
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Nền Video Background */}
+            <video
+              src="/video-background.mp4"
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
 
-            {/* Góc trên phải */}
-            <div className="relative w-full h-full overflow-hidden">
-              <img
-                src="/anh2.jpg"
-                alt="Top Right"
-                className="w-full h-full object-cover"
-              />
-              {/* TDT Logo */}
-              <img
-                src="/logo-tdt.webp"
-                alt="TDTU Logo"
-                className="absolute top-3 right-3 z-40 w-16 drop-shadow-md"
-              />
-            </div>
+            {/* TDT Logo */}
+            <img
+              src="/logo-tdt.webp"
+              alt="TDTU Logo"
+              className="absolute top-3 right-3 z-40 w-16 drop-shadow-md"
+            />
 
-            {/* Góc dưới trái */}
-            <div className="relative w-full h-full overflow-hidden">
-              <img
-                src="/anh1.jpg"
-                alt="Bottom Left"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <div className="absolute top-[54%] left-0 z-20 w-[250px] -translate-y-1/2">
+              <div style={{ transform: `scale(${mobileScale})`, transformOrigin: "left center", transition: "transform 0.1s ease-out" }}>
+                <div className="relative aspect-[520/479] w-full drop-shadow-2xl">
+                  <img
+                    src="/camera.png"
+                    alt="Camera frame"
+                    className="relative z-20 h-[95%] w-[95%] object-contain"
+                  />
 
-            {/* Góc dưới phải */}
-            <div className="relative w-full h-full overflow-hidden">
-              <video
-                src="/video2.mp4"
-                className="w-full h-full object-cover object-top"
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
-            </div>
+                  <div className="absolute left-[35%] top-[25%] z-30 h-[33%] w-[54%] overflow-hidden rounded-[3px] bg-black">
+                    <Slideshow />
+                  </div>
 
-            <div className="absolute top-[57%] left-0 z-20 w-[300px] -translate-y-1/2">
-              <div className="relative aspect-[520/479] w-full drop-shadow-2xl">
-                <img
-                  src="/camera.png"
-                  alt="Camera frame"
-                  className="relative z-20 h-[95%] w-[95%] object-contain"
-                />
-
-                <div className="absolute left-[35%] top-[25%] z-30 h-[33%] w-[54%] overflow-hidden rounded-[3px] bg-black">
-                  <Slideshow />
+                  <img
+                    src="/flower.png"
+                    alt="flower"
+                    className="absolute top-4 left-[20%] z-40 h-10 w-10 rotate-[-15deg]"
+                  />
                 </div>
+              </div>
+            </div>
 
+            <div className="absolute top-[40%] right-0 z-20 w-[190px] -translate-y-1/2 flex justify-end">
+              <div style={{ transform: `scale(${mobileScale})`, transformOrigin: "right center", transition: "transform 0.1s ease-out" }} className="w-full">
                 <img
-                  src="/flower.png"
-                  alt="flower"
-                  className="absolute top-4 left-[20%] z-40 h-12 w-12 rotate-[-15deg]"
+                  src="/piece1-cropped.png"
+                  alt="Paper"
+                  style={{ transform: "scaleY(-1)" }}
+                  className="relative z-20 w-full object-contain object-right"
                 />
+                <div className="absolute left-[14%] top-[22%] z-30 w-[76%] overflow-hidden">
+                  <p className="paper-invite-note w-full max-w-full whitespace-normal break-words text-left text-[14px] font-medium leading-tight">
+                    <Typewriter text="Mời bạn đến tham dự lễ tốt nghiệp của mình nhé" delay={1200} speed={50} />
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="absolute top-[40%] right-0 z-20 w-[230px] -translate-y-1/2 flex justify-end">
-              <img
-                src="/piece1-cropped.png"
-                alt="Paper"
-                style={{ transform: "scaleY(-1)" }}
-                className="relative z-20 w-full object-contain object-right"
-              />
-              <div className="absolute left-[14%] top-[22%] z-30 w-[76%] overflow-hidden">
-                <p className="paper-invite-note w-full max-w-full whitespace-normal break-words text-left text-[17px] font-medium leading-tight">
-                  <Typewriter text="Mời bạn đến tham dự lễ tốt nghiệp của mình nhé" delay={1200} speed={50} />
-                </p>
-              </div>
-            </div>
-
-            <div className="absolute bottom-0 left-1/2 z-20 w-full -translate-x-1/2 px-3 pb-15">
-              <div
-                className="font-bubble mx-auto flex w-max max-w-[95vw] flex-col gap-1.5 rounded-[18px] border border-pink-100/70 bg-pink-200/35 px-4 py-2.5 text-white shadow-xl backdrop-blur-md"
-                style={{
-                  textShadow: "0 1px 0 rgba(236, 72, 153, 0.45), 0 2px 5px rgba(0, 0, 0, 0.22)",
-                }}
-              >
+            <div className="absolute bottom-0 left-1/2 z-20 w-[390px] -translate-x-1/2 pb-12">
+              <div style={{ transform: `scale(${mobileScale})`, transformOrigin: "bottom center", transition: "transform 0.1s ease-out" }} className="w-full flex justify-center">
                 <div
-                  className="banner-text-float text-center text-[22px] font-black leading-tight"
-                  style={{ animationDelay: "0ms" }}
+                  className="font-bubble mx-auto flex w-max flex-col gap-1.5 rounded-[18px] border border-pink-100/70 bg-pink-200/35 px-4 py-2.5 text-white shadow-xl backdrop-blur-md"
+                  style={{
+                    textShadow: "0 1px 0 rgba(236, 72, 153, 0.45), 0 2px 5px rgba(0, 0, 0, 0.22)",
+                  }}
                 >
-                  Huyền Diệu
-                </div>
+                  <div
+                    className="banner-text-float text-center text-[22px] font-black leading-tight"
+                    style={{ animationDelay: "0ms" }}
+                  >
+                    Huyền Diệu
+                  </div>
 
                 <div className="flex w-full items-center justify-center gap-3">
                   <div
@@ -439,6 +391,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
               </div>
             </div>
           </div>
+        </div>
         </div>
         </div>
       </div>
