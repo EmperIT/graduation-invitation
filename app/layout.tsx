@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond, Great_Vibes, Fredoka, Patrick_Hand } from "next/font/google";
+import { Inter, Cormorant_Garamond, Great_Vibes, Baloo_2, Patrick_Hand } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -16,9 +16,9 @@ const greatVibes = Great_Vibes({
   variable: "--font-great-vibes",
 });
 
-const bubbleCute = Fredoka({
-  subsets: ["latin", "latin-ext"],
-  weight: ["300", "400", "500", "600", "700"],
+const bubbleCute = Baloo_2({
+  subsets: ["latin", "vietnamese"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-bubble-cute",
 });
 

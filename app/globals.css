@@ -223,3 +223,15 @@ html, body, #__next {
     border-color: transparent;
   }
 }
+
+@keyframes map-wiggle {
+  0%, 100% { transform: rotate(0); }
+  10%, 30%, 50% { transform: rotate(12deg); }
+  20%, 40%, 60% { transform: rotate(-12deg); }
+  70% { transform: rotate(0); }
+}
+
+.animate-map-wiggle {
+  animation: map-wiggle 2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
