@@ -98,25 +98,6 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
         </div>
       )}
 
-      {/* Map Location Icon */}
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14">
-        {/* Vòng tròn tỏa sáng radar (Ping effect) */}
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-60"></span>
-        
-        {/* Nút bấm nhún nhảy (Bounce effect) */}
-        <a
-          href="https://discovery.tdtu.edu.vn/?fbclid=IwY2xjawR8E1ZleHRuA2FlbQIxMQBicmlkETE2dlZCVHdaQWxCV0NGeTJXc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHnEQ3xbn1GP7a5BAhB1rmk5OGGhK1_5nrLN6p9M3YcZA4DXX-sXjjSgS3Y5F_aem_9mRM0gGzCJTJ8UWwHKsAOA"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative flex h-full w-full items-center justify-center rounded-full bg-white/90 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.8)] border border-pink-300 hover:bg-white hover:scale-110 transition-all duration-300 animate-bounce"
-          aria-label="Xem Bản Đồ"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-7 sm:w-7 text-rose-600 drop-shadow-md" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-          </svg>
-        </a>
-      </div>
-
       {/* Wrapper transform scale giúp ảnh không bao giờ bị cắt */}
       <div 
         className="absolute inset-0 z-20 flex justify-center items-center transition-opacity duration-500"
@@ -148,6 +129,12 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                     src="/anh2.jpg"
                     alt="Top Right"
                     className="w-full h-full object-cover sm:object-contain"
+                  />
+                  {/* TDT Logo */}
+                  <img
+                    src="/logo-tdt.webp"
+                    alt="TDTU Logo"
+                    className="absolute top-3 right-3 z-40 w-16 drop-shadow-md sm:top-4 sm:right-4 sm:w-20"
                   />
                 </div>
 
@@ -207,7 +194,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                 </div>
                 <div className="absolute bottom-0 left-1/2 z-20 w-full -translate-x-1/2 px-3 pb-3 sm:px-6 sm:pb-15">
                   <div
-                    className="font-bubble mx-auto flex w-full max-w-[360px] flex-col gap-1.5 rounded-[20px] border border-pink-100/70 bg-pink-200/35 px-3 py-2.5 text-white shadow-xl backdrop-blur-md sm:max-w-[480px] sm:gap-2 sm:rounded-[24px] sm:px-5 sm:py-3.5"
+                    className="font-bubble mx-auto flex w-max max-w-[95vw] flex-col gap-1.5 rounded-[20px] border border-pink-100/70 bg-pink-200/35 px-4 py-2.5 text-white shadow-xl backdrop-blur-md sm:gap-2 sm:rounded-[24px] sm:px-6 sm:py-3.5"
                     style={{
                       textShadow: "0 1px 0 rgba(236, 72, 153, 0.45), 0 2px 5px rgba(0, 0, 0, 0.22)",
                     }}
@@ -221,7 +208,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                     </div>
 
                     {/* Middle: Grid/Flex */}
-                    <div className="flex w-full items-center justify-between gap-1 sm:gap-2">
+                    <div className="flex w-full items-center justify-center gap-3 sm:gap-6">
                       <div
                         className="banner-text-float shrink-0 text-center leading-[1.1]"
                         style={{ animationDelay: "90ms" }}
@@ -233,14 +220,26 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                       <div className="h-8 w-px shrink-0 bg-white/45 sm:h-10" />
 
                       <div
-                        className="banner-text-float min-w-0 flex-1 flex flex-col justify-center text-center leading-[1.15]"
+                        className="banner-text-float shrink-0 flex flex-col justify-center text-center leading-[1.15]"
                         style={{ animationDelay: "180ms" }}
                       >
                         <div className="text-[13px] font-black sm:text-[17px]">
                           Đại học Tôn Đức Thắng
                         </div>
-                        <div className="mt-0.5 text-[12px] font-bold sm:mt-1 sm:text-[16px]">
-                          Tòa A
+                        <div className="mt-0.5 flex items-center justify-center gap-1.5 text-[12px] font-bold sm:mt-1 sm:text-[16px]">
+                          <span>Tòa A</span>
+                          <a
+                            href="https://discovery.tdtu.edu.vn/?fbclid=IwY2xjawR8E1ZleHRuA2FlbQIxMQBicmlkETE2dlZCVHdaQWxCV0NGeTJXc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHnEQ3xbn1GP7a5BAhB1rmk5OGGhK1_5nrLN6p9M3YcZA4DXX-sXjjSgS3Y5F_aem_9mRM0gGzCJTJ8UWwHKsAOA"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-white/90 backdrop-blur-md shadow-[0_0_10px_rgba(236,72,153,0.8)] border border-pink-300 hover:bg-white hover:scale-110 transition-all duration-300 animate-bounce"
+                            aria-label="Xem Bản Đồ"
+                          >
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-60"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="relative z-10 h-3 w-3 sm:h-4 sm:w-4 text-rose-600 drop-shadow-md" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                            </svg>
+                          </a>
                         </div>
                       </div>
 
@@ -297,6 +296,12 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                 src="/anh2.jpg"
                 alt="Top Right"
                 className="w-full h-full object-cover"
+              />
+              {/* TDT Logo */}
+              <img
+                src="/logo-tdt.webp"
+                alt="TDTU Logo"
+                className="absolute top-3 right-3 z-40 w-16 drop-shadow-md"
               />
             </div>
 
@@ -357,7 +362,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
 
             <div className="absolute bottom-0 left-1/2 z-20 w-full -translate-x-1/2 px-3 pb-15">
               <div
-                className="font-bubble mx-auto flex w-full max-w-[340px] flex-col gap-1.5 rounded-[18px] border border-pink-100/70 bg-pink-200/35 px-3 py-2.5 text-white shadow-xl backdrop-blur-md"
+                className="font-bubble mx-auto flex w-max max-w-[95vw] flex-col gap-1.5 rounded-[18px] border border-pink-100/70 bg-pink-200/35 px-4 py-2.5 text-white shadow-xl backdrop-blur-md"
                 style={{
                   textShadow: "0 1px 0 rgba(236, 72, 153, 0.45), 0 2px 5px rgba(0, 0, 0, 0.22)",
                 }}
@@ -369,7 +374,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                   Huyền Diệu
                 </div>
 
-                <div className="flex w-full items-center justify-between gap-1">
+                <div className="flex w-full items-center justify-center gap-3">
                   <div
                     className="banner-text-float shrink-0 text-center leading-[1.1]"
                     style={{ animationDelay: "90ms" }}
@@ -381,14 +386,26 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
                   <div className="h-8 w-px shrink-0 bg-white/45" />
 
                   <div
-                    className="banner-text-float min-w-0 flex-1 flex flex-col justify-center text-center leading-[1.15]"
+                    className="banner-text-float shrink-0 flex flex-col justify-center text-center leading-[1.15]"
                     style={{ animationDelay: "180ms" }}
                   >
                     <div className="text-[13px] font-black">
                       Đại học Tôn Đức Thắng
                     </div>
-                    <div className="mt-0.5 text-[12px] font-bold">
-                      Tòa A
+                    <div className="mt-0.5 flex items-center justify-center gap-1.5 text-[12px] font-bold">
+                      <span>Tòa A</span>
+                      <a
+                        href="https://discovery.tdtu.edu.vn/?fbclid=IwY2xjawR8E1ZleHRuA2FlbQIxMQBicmlkETE2dlZCVHdaQWxCV0NGeTJXc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHnEQ3xbn1GP7a5BAhB1rmk5OGGhK1_5nrLN6p9M3YcZA4DXX-sXjjSgS3Y5F_aem_9mRM0gGzCJTJ8UWwHKsAOA"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="relative flex h-5 w-5 items-center justify-center rounded-full bg-white/90 backdrop-blur-md shadow-[0_0_10px_rgba(236,72,153,0.8)] border border-pink-300 hover:bg-white hover:scale-110 transition-all duration-300 animate-bounce"
+                        aria-label="Xem Bản Đồ"
+                      >
+                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-400 opacity-60"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="relative z-10 h-3 w-3 text-rose-600 drop-shadow-md" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                        </svg>
+                      </a>
                     </div>
                   </div>
 
