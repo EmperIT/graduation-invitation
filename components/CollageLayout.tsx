@@ -55,7 +55,7 @@ export default function CollageLayout({ framed = false }: CollageLayoutProps) {
     setIsMounted(true);
     
     const observer = new ResizeObserver((entries) => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (width === 0 || height === 0) continue;
         

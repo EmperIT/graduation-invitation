@@ -62,5 +62,5 @@ export default function Typewriter({
     return () => clearTimeout(timer);
   }, [text, index, isDeleting, speed, deleteSpeed, delay, pauseDelay, deleteDelay]);
 
-  return <span className={className}>{displayedText}</span>;
+  return <span className={className}>{displayedText || "\u00A0"}</span>;
 }
